@@ -132,13 +132,36 @@ where t.`year` = '2019' and a.name = 'gioco più atteso' and av.`year` ='2018'
 
 
 
-
 *********** BONUS ***********
 
 10- Selezionare i dati della prima software house che ha rilasciato un gioco, assieme ai dati del gioco stesso (software house id : 5)
+select  sh.*,v.release_date  from software_houses sh 
+join videogames v on v.software_house_id = sh.id 
+order by v.release_date asc 
+limit 1
 
 11- Selezionare i dati del videogame (id, name, release_date, totale recensioni) con più recensioni (videogame id : potrebbe uscire 449 o 398, sono entrambi a 20)
+select videogame_id,count(videogame_id) as count  from reviews r 
+group by videogame_id 
+order by count desc
+limit 1
+
 
 12- Selezionare la software house che ha vinto più premi tra il 2015 e il 2016 (software house id : potrebbe uscire 3 o 1, sono entrambi a 3)
+select sh.*, count(sh.id) as count  from software_houses sh 
+join videogames v on v.software_house_id = sh.id 
+join award_videogame av on av.videogame_id = v.id 
+join awards a on a.id = av.award_id 
+where av.`year` >= '2015' and av.`year` <= '2016'
+group by sh.id
+order by count desc
+limit 1
 
 13- Selezionare le categorie dei videogame i quali hanno una media recensioni inferiore a 1.5 (10)
+select distinct c.name from videogames v 
+join category_videogame cv on v.id = cv.videogame_id 
+join categories c on c.id = cv.category_id 
+join reviews r on r.videogame_id = v.id 
+group by v.id,c.name
+having avg(r.rating) < 2
+
